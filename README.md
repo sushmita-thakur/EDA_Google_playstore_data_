@@ -1,4 +1,4 @@
-# Dataset Summary
+# 1. Dataset Summary
 
 + The dataset contains records for 311 employees across 36 features, covering demographic details, employment status,   salary, performance metrics, recruitment sources, and workplace engagement.
 
@@ -76,7 +76,7 @@
 
 + Days Late in Last 30 Days: Average 0.41 days (Max: 6 days)
 
-+  3. `Data Cleanliness & Missing Values`
+###  3. `Data Cleanliness & Missing Values`
 
 + DateofTermination: 207 missing values (This is expected since 207 employees are currently Active).
 
