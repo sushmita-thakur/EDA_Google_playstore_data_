@@ -1,85 +1,95 @@
-# 1. Dataset Summary
+# Google Play Store Apps - Data Cleaning & Exploratory Data Analysis (EDA)
 
-+ The dataset contains records for 311 employees across 36 features, covering demographic details, employment status,   salary, performance metrics, recruitment sources, and workplace engagement.
+An end-to-end Exploratory Data Analysis (EDA) and data preprocessing pipeline on the **Google Play Store Apps** dataset. This project cleans raw, messy mobile application data and uncovers key insights regarding app categories, pricing models, user ratings, download installs, and Android version compatibility.
 
-| Category | Key Columns | Description |
-| :--- | :--- | :--- |
-| **Demographics** | `Employee_Name`, `Sex`, `MaritalDesc`, `RaceDesc`, `CitizenDesc`, `DOB`, `State`, `Zip` | Personal demographic information of each employee. |
-| **Employment & Role** | `Position`, `Department`, `EmploymentStatus`, `ManagerName`, `DateofHire`, `DateofTermination`, `TermReason` | Role titles, team structure, hiring dates, and exit reasons (if applicable). |
-| **Compensation & Output** | `Salary`, `SpecialProjectsCount` | Annual salary in USD and count of assigned special projects. |
-| **Performance & Behavior** | `PerformanceScore`, `EngagementSurvey`, `EmpSatisfaction`, `Absences`, `DaysLateLast30`, `LastPerformanceReview_Date` | Employee evaluation metrics, survey ratings (1–5 scale), attendance, and punctuality. |
-| **Recruitment Channel** | `RecruitmentSource`, `FromDiversityJobFairID` | Platform or channel through which the employee was hired. |
+---
 
-#### 2. High-Level Data Insights
+## 📋 Table of Contents
+- [Project Overview](#project-overview)
+- [Dataset Features](#dataset-features)
+- [Data Preprocessing & Cleaning Steps](#data-preprocessing--cleaning-steps)
+- [Exploratory Data Analysis (EDA)](#exploratory-data-analysis-eda)
+- [Key Insights](#key-insights)
+- [Tech Stack](#tech-stack)
+- [Usage / Getting Started](#usage--getting-started)
 
-+ A. `Employment & Attrition Status:`
+---
 
-  + Active Employees: 207 (~66.6%)
+## 🔍 Project Overview
+The Google Play Store dataset contains rich information about thousands of Android applications. However, raw real-world data often contains inconsistencies, formatting errors, missing values, and duplicates. This project demonstrates a robust data science workflow:
+1. **Data Inspection & Profiling**: Examining data types, missing values, and statistical summaries (`info()`, `describe()`).
+2. **Data Cleaning & Transformation**: Handling corrupt rows, converting object types to numeric/datetime formats, and parsing complex string units (e.g., file sizes in MB/KB, install counts with `+` and `,`, and currency prices).
+3. **Deduplication**: Removing duplicate records and redundant app entries.
+4. **Exploratory Data Analysis**: Analyzing categorical distributions and numerical distributions using visualizations.
 
-  + Voluntarily Terminated: 88 (~28.3%)
+---
 
-  + Terminated for Cause: 16 (~5.1%)
+## 📊 Dataset Features
+The raw dataset consists of **10,841 rows** and **13 columns**:
+* `App`: Application name
+* `Category`: Category the app belongs to (e.g., FAMILY, GAME, TOOLS)
+* `Rating`: Overall user rating of the app
+* `Reviews`: Total number of user reviews
+* `Size`: Size of the app (in MB/KB or varies with device)
+* `Installs`: Total number of downloads/installs
+* `Type`: Free or Paid
+* `Price`: Price of the app (0 for free apps)
+* `Content Rating`: Target audience age group (e.g., Everyone, Teen, Mature 17+)
+* `Genres`: Sub-genres/genres associated with the app
+* `Last Updated`: Date when the app was last updated
+* `Current Ver`: Current version of the app
+* `Android Ver`: Minimum required Android version
 
-+ B. `Salary Distribution`
+---
 
-+ Mean Salary: $69,020.68
+## 🛠️ Data Preprocessing & Cleaning Steps
 
-+ Median Salary: $62,810.00
+The data cleaning pipeline systematically resolves data quality issues:
+* **Duplicate Removal**: Identified and removed **483 exact duplicate rows**. Further deduplicated based on unique app names (`App` column, keeping the first occurrence), reducing the dataset to **9,659 unique apps**.
+* **Outlier & Error Correction**: Cleaned erroneous rows containing corrupted column shifts (e.g., invalid category and rating mappings).
+* **Feature Engineering & Type Conversions**:
+  * **Reviews**: Converted from `object` to integer (`int32`).
+  * **Size**: Parsed size strings ending in `'M'` (Megabytes converted to Kilobytes) and `'k'` (Kilobytes), converting them into clean numerical float values.
+  * **Installs**: Removed `+` and `,` symbols and converted to integer (`int32`).
+  * **Price**: Removed the `$` currency sign and converted to float (`float64`).
+  * **Last Updated**: Converted to datetime objects and extracted discrete `day`, `month`, and `year` features for temporal analysis.
+  * **Android Ver**: Cleaned string formatting by stripping `" and up"` and `"Varies with device"`.
 
-+ Minimum Salary: $45,046.00
+---
 
-+ Maximum Salary: $250,000.00
+## 📈 Exploratory Data Analysis (EDA)
 
-+ C. `Departmental Breakdown`
+The EDA phase explores both categorical and numerical variables:
+* **Categorical Analysis**: 
+  * Analyzed frequency distributions and proportions across `Category`, `Type` (Free vs. Paid), `Content Rating`, and `Genres` using value counts and frequency tables.
+  * Highlighted dominant categories such as **FAMILY** (~19%), **GAME** (~9.9%), and **TOOLS** (~8.6%).
+* **Numerical Analysis**:
+  * Generated five-point statistical summaries and distribution plots (`distplot`, histograms, box plots) for `Rating`, `Reviews`, `Size`, `Installs`, and `Price`.
+  * Explored pricing distributions showing that the vast majority of apps (~92.2%) are **Free**, while ~7.8% are **Paid**.
 
-+ Production: 209 employees (~67.2%)
+---
 
-+ IT/IS: 50 employees (~16.1%)
+## 💡 Key Insights
+* **App Distribution**: The Google Play Store is heavily dominated by **Family**, **Game**, and **Tools** applications.
+* **Monetization Model**: Free apps vastly outnumber paid apps, indicating that developers rely heavily on in-app purchases and advertisements rather than upfront purchase costs.
+* **Ratings**: Average app ratings cluster tightly around a mean of **4.19 / 5.0**, showing a positive skew in user feedback.
 
-+ Sales: 31 employees (~10.0%)
+---
 
-+ Software Engineering: 11 employees (~3.5%)
+## ⚙️ Tech Stack
+* **Language**: Python
+* **Libraries**: 
+  * `pandas`, `numpy` for data manipulation, cleaning, and transformation.
+  * `matplotlib`, `seaborn` for generating statistical plots and data visualizations.
 
-+ Admin Offices: 9 employees (~2.9%)
+---
 
-+ Executive Office: 1 employee (~0.3%)
+## 🚀 Usage / Getting Started
+To run the analysis notebook or script:
+```bash
 
-+ D. `Performance Ratings`
+# Install dependencies
+pip install pandas numpy matplotlib seaborn
 
-+ Fully Meets: 243 employees (~78.1%)
-
-+ Exceeds: 37 employees (~11.9%)
-
-+ Needs Improvement: 18 employees (~5.8%)
-
-+ PIP (Performance Improvement Plan): 13 employees (~4.2%)
-
-+ E. `Top Recruitment Sources`
-
-+ Indeed: 87 hires
-
-+ LinkedIn: 76 hires
-
-+ Google Search: 49 hires
-
-+ Employee Referral: 31 hires
-
-+ Diversity Job Fair: 29 hires
-
-+ F. `Engagement & Attendance Highlights`
-
-+ Average Engagement Survey Score: 4.11 / 5.0
-
-+ Average Employee Satisfaction Score: 3.89 / 5.0
-
-+ Average Absences per Employee: 10.24 days
-
-+ Days Late in Last 30 Days: Average 0.41 days (Max: 6 days)
-
-###  3. `Data Cleanliness & Missing Values`
-
-+ DateofTermination: 207 missing values (This is expected since 207 employees are currently Active).
-
-+ ManagerID: 8 missing values (Can be imputed using ManagerName).
-
-+ All other 34 columns have 0 missing values and clean data types.
+# Run the Jupyter Notebook
+jupyter notebook
